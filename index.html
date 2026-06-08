@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy 25th Birthday Suma! ✨</title>
+  <meta name="description" content="A special, interactive birthday celebration page for Suma turning 25 on June 13th, 2026. Made with love by her sister and brother-in-law.">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dark: '#0b0720',
+            gold: '#e5c07b',
+            rose: '#f07297',
+            violet: '#8e5bf5',
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Canvas Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  
+  <!-- Custom Application Script -->
+  <script src="app.js" defer></script>
+</head>
+<body class="bg-dark text-gray-100 min-h-screen relative selection:bg-rose/30 selection:text-gold">
+  
+  <!-- Decorative Floating Background Elements -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0 opacity-20">
+    <div class="absolute top-10 left-10 w-72 h-72 bg-violet rounded-full filter blur-[100px] animate-float-slow"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-rose rounded-full filter blur-[120px] animate-float-medium"></div>
+    <div class="absolute top-1/2 left-1/3 w-64 h-64 bg-gold rounded-full filter blur-[90px] animate-float-slow"></div>
+  </div>
+
+  <!-- Ambient audio control widget -->
+  <div class="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-dark/80 backdrop-blur-md border border-white/10 px-4 py-2.5 rounded-full shadow-2xl glass glow-gold">
+    <div class="flex items-center gap-1 h-5 w-8">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </div>
+    <span id="music-status-text" class="text-xs text-gold/80 font-mono tracking-wide hidden sm:inline">Play Birthday Song</span>
+    <button id="music-toggle" aria-label="Toggle birthday song" class="p-2 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 transition-colors duration-300">
+      <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Scroll Down Hint Indicator -->
+  <div id="scroll-hint" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-2 transition-opacity duration-500 pointer-events-none">
+    <span class="text-xs text-gold/60 uppercase tracking-widest font-mono">Scroll to explore</span>
+    <div class="mouse"></div>
+  </div>
+
+  <!-- HEADER / HERO -->
+  <header class="relative z-10 min-h-screen flex flex-col justify-between py-12 px-6">
+    <div class="w-full text-center max-w-4xl mx-auto pt-16">
+      <div class="inline-block border border-gold/30 rounded-full px-5 py-1.5 bg-gold/5 backdrop-blur-sm text-gold text-xs tracking-[0.25em] uppercase font-mono mb-6 shadow-sm">
+        Special Milestone Celebration
+      </div>
+      
+      <h1 class="text-5xl sm:text-7xl lg:text-8xl font-serif font-bold tracking-tight mb-4 text-transparent bg-clip-text bg-gradient-to-r from-gold via-white to-rose glow-text-gold">
+        SUMA'S 25<span class="text-xs text-rose relative -top-8 uppercase font-mono tracking-widest">th</span>
+      </h1>
+      
+      <h2 class="text-2xl sm:text-3xl font-cursive text-rose text-center mb-8">
+        Happy Birthday to our favorite Sister-in-law!
+      </h2>
+      
+      <p class="text-gray-400 text-sm sm:text-base max-w-lg mx-auto mb-10 leading-relaxed font-light">
+        A quarter century of laughter, kindness, and beautiful memories. Turning 25 on <span class="text-gold font-medium">June 13th, 2026</span>. Let's celebrate your special day together!
+      </p>
+
+      <!-- COUNTDOWN TIMER SECTION -->
+      <div id="countdown-container" class="max-w-2xl mx-auto glass-premium rounded-2xl p-6 sm:p-8 glow-violet mb-12 relative overflow-hidden">
+        <!-- Shine overlay -->
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_3s_infinite]"></div>
+        
+        <h3 class="text-xs uppercase tracking-widest text-gold/60 font-mono mb-4">Countdown to June 13th, 2026</h3>
+        <div class="grid grid-cols-4 gap-4 text-center">
+          <div class="bg-dark/40 rounded-xl p-3 border border-white/5">
+            <span id="days" class="block text-3xl sm:text-5xl font-mono font-bold text-white">00</span>
+            <span class="text-[10px] sm:text-xs uppercase tracking-widest text-gray-500 font-mono">Days</span>
+          </div>
+          <div class="bg-dark/40 rounded-xl p-3 border border-white/5">
+            <span id="hours" class="block text-3xl sm:text-5xl font-mono font-bold text-white">00</span>
+            <span class="text-[10px] sm:text-xs uppercase tracking-widest text-gray-500 font-mono">Hours</span>
+          </div>
+          <div class="bg-dark/40 rounded-xl p-3 border border-white/5">
+            <span id="minutes" class="block text-3xl sm:text-5xl font-mono font-bold text-white">00</span>
+            <span class="text-[10px] sm:text-xs uppercase tracking-widest text-gray-500 font-mono">Minutes</span>
+          </div>
+          <div class="bg-dark/40 rounded-xl p-3 border border-white/5">
+            <span id="seconds" class="block text-3xl sm:text-5xl font-mono font-bold text-white">00</span>
+            <span class="text-[10px] sm:text-xs uppercase tracking-widest text-gray-500 font-mono">Seconds</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CELEBRATION BANNER (SHOWN WHEN COUNTDOWN HITS ZERO) -->
+      <div id="celebration-container" class="hidden max-w-2xl mx-auto glass-premium rounded-2xl p-8 glow-gold mb-12 border-gold/30">
+        <h3 class="text-4xl sm:text-5xl font-serif font-bold text-gold mb-3 animate-pulse">It's June 13th! 🎉</h3>
+        <h4 class="text-2xl font-cursive text-rose mb-4">Happy 25th Birthday, Suma!</h4>
+        <p class="text-gray-300 text-sm max-w-md mx-auto">
+          Today, we celebrate the wonderful 25 years you've brought to this world. May this year be filled with magic and endless happiness!
+        </p>
+      </div>
+    </div>
+
+    <!-- GLASSMORPHIC COVER CARD -->
+    <div class="w-full max-w-lg mx-auto glass-premium p-4 rounded-3xl glow-gold border-white/10 relative overflow-hidden mb-12 shadow-2xl">
+      <img src="assets/birthday_cover.png" alt="Suma's 25th Birthday Celebration Art" class="w-full h-auto rounded-2xl object-cover shadow-inner hover:scale-[1.02] transition-transform duration-500" loading="eager" fetchpriority="high">
+      <div class="absolute bottom-6 left-6 right-6 p-4 rounded-xl bg-dark/70 backdrop-blur-md border border-white/10 text-center">
+        <span class="text-xs tracking-wider text-gold font-mono uppercase font-bold block mb-1">June 13, 2026</span>
+        <span class="text-sm font-serif text-white italic">"Celebrating a quarter-century of absolute magic!"</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- INTERACTIVE CAKE SECTION -->
+  <main class="relative z-10 max-w-5xl mx-auto px-6 py-16">
+    <section class="mb-24 text-center">
+      <div class="inline-block border border-rose/30 rounded-full px-5 py-1.5 bg-rose/5 backdrop-blur-sm text-rose text-xs tracking-widest uppercase font-mono mb-4">
+        Interactive Experience
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-serif font-bold text-white mb-3">Blow out 25 Candles! 🎂</h2>
+      <p class="text-gray-400 text-sm max-w-md mx-auto mb-10 leading-relaxed">
+        Suma, we've prepared 25 virtual candles representing each of your amazing years. Tap/click on each candle to blow it out, or hit the button below to blow them all out and make your wish!
+      </p>
+
+      <!-- Candles Status indicator -->
+      <p id="candles-status" class="text-sm text-gold/80 font-mono tracking-wide mb-8 bg-white/5 border border-white/5 inline-block px-5 py-2 rounded-full backdrop-blur-sm">
+        <span class="text-rose font-semibold">25</span> candles left to blow out!
+      </p>
+
+      <!-- Grid of Candles -->
+      <div id="candles-grid" class="grid grid-cols-5 sm:grid-cols-5 md:grid-cols-10 gap-x-2 gap-y-4 max-w-3xl mx-auto mb-12 bg-white/5 border border-white/5 rounded-3xl p-6 sm:p-8 backdrop-blur-sm">
+        <!-- Candles dynamically generated by app.js -->
+      </div>
+
+      <!-- Make a Wish button -->
+      <button id="make-wish-btn" class="px-8 py-3.5 bg-gradient-to-r from-gold via-yellow-500 to-rose hover:from-yellow-400 hover:to-rose-500 text-dark font-semibold rounded-full shadow-lg transform transition-all duration-300 hover:scale-105 active:scale-95 text-sm uppercase tracking-wider glow-gold flex items-center gap-2 mx-auto">
+        <svg class="w-5 h-5 text-dark" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z" />
+        </svg>
+        Blow Out & Make a Wish
+      </button>
+    </section>
+
+    <!-- UNLOCKED SECTIONS (LOCKED UNTIL USER BLOWS OUT CAKE) -->
+    <!-- We hide it initially with 'hidden' and show with 'locked-until-wish' class in app.js -->
+    <div class="locked-until-wish hidden transition-all duration-700">
+      
+      <!-- LETTER SECTION -->
+      <section class="mb-32 py-12 relative">
+        <div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+          <span class="text-[15rem] font-cursive text-gold">Wish</span>
+        </div>
+        
+        <div class="text-center mb-16">
+          <h2 class="text-3xl sm:text-4xl font-serif font-bold text-white mb-2">A Heartfelt Letter ✉️</h2>
+          <p class="text-gray-400 text-sm max-w-sm mx-auto">Tap the envelope to open and read your special message.</p>
+        </div>
+
+        <div class="envelope-wrapper my-8">
+          <div class="envelope-flap"></div>
+          <div class="envelope"></div>
+          <div class="letter shadow-2xl flex flex-col justify-between">
+            <div class="overflow-y-auto pr-1">
+              <h3 class="text-lg font-serif font-bold border-b border-gray-200 pb-2 mb-3 text-dark flex justify-between items-center">
+                <span>Dear Suma,</span>
+                <span class="text-xs font-mono text-rose uppercase tracking-widest font-normal">June 13, 2026</span>
+              </h3>
+              <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-light mb-4">
+                Happiest 25th Birthday to the most amazing sister-in-law! It feels like just yesterday you were stepping into your twenties, and now, here you are, celebrating a quarter-century of grace, beauty, and accomplishments. 
+              </p>
+              <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-light mb-4">
+                Thank you for being such an incredible sister to my wife and an absolute light in our family. Your energy, kindness, and infectious laughter make every single family gathering brighter. We are so lucky to have you.
+              </p>
+              <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-light">
+                As you enter this new chapter, we hope it brings you closer to all your dreams. Keep shining bright, stay happy, and never lose your beautiful spark!
+              </p>
+            </div>
+            <div class="border-t border-gray-200 pt-3 text-right">
+              <span class="font-cursive text-2xl text-violet block leading-tight">With love and hugs,</span>
+              <span class="text-[11px] font-sans font-semibold tracking-wider text-gray-600 uppercase">Your Sister & Brother-in-law</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PHOTO GALLERY / MEMORY LANE -->
+      <section class="mb-32">
+        <div class="text-center mb-16">
+          <div class="inline-block border border-gold/30 rounded-full px-5 py-1.5 bg-gold/5 backdrop-blur-sm text-gold text-xs tracking-widest uppercase font-mono mb-4">
+            Memory Lane
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-serif font-bold text-white mb-3">Our Beautiful Gallery 📸</h2>
+          <p class="text-gray-400 text-sm max-w-md mx-auto">Some of the brightest moments and milestones along the way.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Polaroid Card 1 -->
+          <div class="flex justify-center scroll-reveal">
+            <div class="polaroid w-80 transform hover:-rotate-1">
+              <div class="h-64 overflow-hidden rounded bg-gray-100 flex items-center justify-center">
+                <img src="assets/gallery_celebration.png" alt="Sisterly Love & Family Celebration" class="w-full h-full object-cover">
+              </div>
+              <p class="font-cursive text-2xl text-dark text-center mt-4 mb-1">Sisterly Love & Ties</p>
+              <p class="text-[10px] text-gray-400 uppercase tracking-widest font-mono text-center">My Wife & Suma</p>
+            </div>
+          </div>
+
+          <!-- Polaroid Card 2 -->
+          <div class="flex justify-center scroll-reveal">
+            <div class="polaroid w-80 rotate-3 transform hover:rotate-1">
+              <div class="h-64 overflow-hidden rounded bg-gradient-to-tr from-violet/20 via-rose/30 to-gold/20 flex items-center justify-center relative">
+                <!-- Fallback elegant art block using CSS -->
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-dark/80 backdrop-blur-sm m-2 rounded border border-white/5">
+                  <span class="text-4xl mb-3">🌟</span>
+                  <span class="text-sm font-serif font-bold text-gold">Chasing Big Dreams</span>
+                  <span class="text-xs text-gray-400 mt-2 italic leading-relaxed">"A wonderful trip together and beautiful chats that inspired us."</span>
+                </div>
+              </div>
+              <p class="font-cursive text-2xl text-dark text-center mt-4 mb-1">Wanderlust Vibes</p>
+              <p class="text-[10px] text-gray-400 uppercase tracking-widest font-mono text-center">Travel Memories</p>
+            </div>
+          </div>
+
+          <!-- Polaroid Card 3 -->
+          <div class="flex justify-center scroll-reveal">
+            <div class="polaroid w-80 -rotate-2 transform hover:rotate-1">
+              <div class="h-64 overflow-hidden rounded bg-gradient-to-br from-indigo-950 via-purple-950 to-rose-950 flex items-center justify-center relative">
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-dark/80 backdrop-blur-sm m-2 rounded border border-white/5">
+                  <span class="text-4xl mb-3">🥂</span>
+                  <span class="text-sm font-serif font-bold text-rose">Cheers to 25 Years</span>
+                  <span class="text-xs text-gray-400 mt-2 italic leading-relaxed">"Celebrating every little smile, success, and quiet victory."</span>
+                </div>
+              </div>
+              <p class="font-cursive text-2xl text-dark text-center mt-4 mb-1">A Quarter Century</p>
+              <p class="text-[10px] text-gray-400 uppercase tracking-widest font-mono text-center">June 13th Milestone</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 25 GOLDEN REASONS / TRAITS SECTION -->
+      <section class="mb-24">
+        <div class="text-center mb-16">
+          <div class="inline-block border border-violet/30 rounded-full px-5 py-1.5 bg-violet/5 backdrop-blur-sm text-violet text-xs tracking-widest uppercase font-mono mb-4">
+            Unlockable Wonders
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-serif font-bold text-white mb-3">6 Gems of Suma's Personality 💎</h2>
+          <p class="text-gray-400 text-sm max-w-md mx-auto">Hover or click on each card to reveal what makes Suma so incredibly special.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <!-- Card 1 -->
+          <div class="flip-card h-48 scroll-reveal">
+            <div class="flip-card-inner">
+              <div class="flip-card-front glass-premium p-6 flex flex-col justify-center items-center border-white/10 glow-violet">
+                <span class="text-3xl mb-2">🌸</span>
+                <h3 class="text-lg font-serif font-bold text-gold">The Best Sister</h3>
+              </div>
+              <div class="flip-card-back bg-gradient-to-br from-violet to-indigo-900 p-6 flex flex-col justify-center items-center border border-violet/50">
+                <p class="text-sm text-white text-center leading-relaxed">
+                  Your sister cherishes you more than anything. Your bond is unbreakable, full of shared secrets, inside jokes, and endless care.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="flip-card h-48 scroll-reveal">
+            <div class="flip-card-inner">
+              <div class="flip-card-front glass-premium p-6 flex flex-col justify-center items-center border-white/10 glow-violet">
+                <span class="text-3xl mb-2">⚡</span>
+                <h3 class="text-lg font-serif font-bold text-gold">Radiant Energy</h3>
+              </div>
+              <div class="flip-card-back bg-gradient-to-br from-rose to-red-900 p-6 flex flex-col justify-center items-center border border-rose/50">
+                <p class="text-sm text-white text-center leading-relaxed">
+                  You walk into any room and instantly double the good vibes. Your laughter is contagious and brings pure warmth to everyone.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="flip-card h-48 scroll-reveal">
+            <div class="flip-card-inner">
+              <div class="flip-card-front glass-premium p-6 flex flex-col justify-center items-center border-white/10 glow-violet">
+                <span class="text-3xl mb-2">💡</span>
+                <h3 class="text-lg font-serif font-bold text-gold">Witty & Sharp</h3>
+              </div>
+              <div class="flip-card-back bg-gradient-to-br from-violet to-purple-900 p-6 flex flex-col justify-center items-center border border-violet/50">
+                <p class="text-sm text-white text-center leading-relaxed">
+                  Always ready with a smart comeback, an intelligent comment, or a funny observation. You make conversations absolutely delightful!
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="flip-card h-48 scroll-reveal">
+            <div class="flip-card-inner">
+              <div class="flip-card-front glass-premium p-6 flex flex-col justify-center items-center border-white/10 glow-violet">
+                <span class="text-3xl mb-2">🎈</span>
+                <h3 class="text-lg font-serif font-bold text-gold">Milestone 25</h3>
+              </div>
+              <div class="flip-card-back bg-gradient-to-br from-gold/80 to-yellow-900 p-6 flex flex-col justify-center items-center border border-gold/50 text-dark">
+                <p class="text-sm text-white text-center leading-relaxed">
+                  A perfect age where youth meets maturity. Ready to conquer big heights, make beautiful memories, and explore the universe.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="flip-card h-48 scroll-reveal">
+            <div class="flip-card-inner">
+              <div class="flip-card-front glass-premium p-6 flex flex-col justify-center items-center border-white/10 glow-violet">
+                <span class="text-3xl mb-2">🌱</span>
+                <h3 class="text-lg font-serif font-bold text-gold">Kind Heart</h3>
+              </div>
+              <div class="flip-card-back bg-gradient-to-br from-emerald-600 to-teal-900 p-6 flex flex-col justify-center items-center border border-emerald-500/50">
+                <p class="text-sm text-white text-center leading-relaxed">
+                  Always putting family first, ready to listen, advise, or simply hug. Your empathy is a beautiful superpower.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="flip-card h-48 scroll-reveal">
+            <div class="flip-card-inner">
+              <div class="flip-card-front glass-premium p-6 flex flex-col justify-center items-center border-white/10 glow-violet">
+                <span class="text-3xl mb-2">👑</span>
+                <h3 class="text-lg font-serif font-bold text-gold">The Golden Spirit</h3>
+              </div>
+              <div class="flip-card-back bg-gradient-to-br from-violet to-fuchsia-950 p-6 flex flex-col justify-center items-center border border-violet/50">
+                <p class="text-sm text-white text-center leading-relaxed">
+                  No matter where life takes you, you maintain a gorgeous, genuine soul. We wish you an amazing journey ahead!
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIRTUAL CONFETTI BURST INTERACTION -->
+      <section class="mb-12 text-center max-w-xl mx-auto glass rounded-3xl p-8 border-white/5">
+        <h3 class="text-2xl font-serif font-bold text-gold mb-3">Need More Sparkles? ✨</h3>
+        <p class="text-xs text-gray-400 mb-6 leading-relaxed">Click the button below anytime to send a grand spray of birthday confetti flying across the page!</p>
+        <button onclick="triggerConfettiBurst(0.8)" class="confetti-btn px-6 py-2.5 bg-rose hover:bg-rose-500 text-white font-medium rounded-full text-xs uppercase tracking-widest shadow-md transition-all duration-200">
+          Shower Confetti 🎉
+        </button>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="relative z-10 border-t border-white/5 py-12 px-6 bg-dark/60 backdrop-blur-sm text-center">
+    <div class="max-w-4xl mx-auto flex flex-col items-center gap-6">
+      <div class="font-cursive text-3xl text-gold">Suma, we love you!</div>
+      <p class="text-xs text-gray-500 max-w-md leading-relaxed font-light">
+        Designed with care by your sister and brother-in-law to celebrate your 25th birthday milestone on June 13th, 2026.
+      </p>
+      <div class="flex items-center gap-2 text-xs text-gray-600 font-mono mt-2">
+        <span>Made with</span>
+        <svg class="w-4 h-4 text-rose fill-rose animate-pulse" viewBox="0 0 24 24">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+        <span>&middot; Happy Birthday Suma!</span>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
